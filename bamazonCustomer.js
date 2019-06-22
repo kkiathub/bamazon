@@ -19,8 +19,8 @@ const connection = mysql.createConnection({
 var productData = [];
 
 function findProductFromTable(id) {
-    for(var i=0; i<productData.length; i++) {
-        if (id==productData[i].id) {
+    for (var i = 0; i < productData.length; i++) {
+        if (id == productData[i].id) {
             // found product
             return i;
         }
@@ -28,7 +28,25 @@ function findProductFromTable(id) {
     return -1;
 }
 
-function userPrompt() {
+function continuePrompt() {
+    inquirer
+        .prompt([
+            {
+                type: "confirm",
+                message: "Would you like to continue shopping?",
+                name: "confirm",
+                default: true
+            }
+        ]).then(function (res) {
+            if (res.confirm) {
+                displayProducts();
+            } else {
+                connection.end();
+            }
+        });
+}
+
+function purchasePrompt() {
     inquirer.prompt([
         {
             type: "input",
@@ -48,20 +66,20 @@ function userPrompt() {
         } else if (isNaN(res.pUnits)) {
             // enter invalid unit number.
             console.log("invalid unit number!");
-        } else if ( productData[prodId].stock_quantity < res.pUnits) {
+        } else if (productData[prodId].stock_quantity < res.pUnits) {
             console.log("Insufficient quantity!");
         } else {
             // enough inventory, transaction proceeds.
             var numLeft = productData[prodId].stock_quantity - res.pUnits;
-            connection.query("UPDATE products SET stock_quantity = ? WHERE id=?",[ numLeft , res.pId] ,
-            (err, queryRes) => {
-                if (err) throw err;
-                console.log("Order completed: total price : " + res.pUnits * productData[prodId].price );
-            });
-
+            connection.query("UPDATE products SET stock_quantity = ? WHERE id=?", [numLeft, res.pId],
+                (err, queryRes) => {
+                    if (err) throw err;
+                    console.log("Order completed: total price : " + res.pUnits * productData[prodId].price);
+                    continuePrompt();
+                });
+            return;
         }
-
-        connection.end();
+        continuePrompt();
     });
 }
 
@@ -72,7 +90,7 @@ function displayProducts() {
             if (err) throw err;
             productData = itemList;
             console.table(itemList);
-            userPrompt();
+            purchasePrompt();
         });
 }
 
