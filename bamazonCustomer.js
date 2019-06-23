@@ -1,6 +1,5 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
-const cTable = require('console.table');
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -89,7 +88,8 @@ function displayProducts() {
         (err, itemList) => {
             if (err) throw err;
             productData = itemList;
-            console.table(itemList);
+            console.log(productData);
+            console.table(itemList, ["id" ,"product_name", "price"]);
             purchasePrompt();
         });
 }
