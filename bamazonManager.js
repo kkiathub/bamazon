@@ -104,8 +104,8 @@ function addNewProduct() {
             console.log("Invalid stock number!");
         } else {
             var deptId = 0;
-            for(var i=0; i<deptArr.length; i++) {
-                if (deptArr[i].department_name===res.pDept) {
+            for (var i = 0; i < deptArr.length; i++) {
+                if (deptArr[i].department_name === res.pDept) {
                     deptId = deptArr[i].id;
                     break;
                 }
@@ -159,12 +159,17 @@ function chooseWhatToDo() {
 
 var deptArr = [];
 var deptNameArr = [];
-connection.query("SELECT * FROM departments",
-    (err, queryRes) => {
-        if (err) throw err;
-        deptArr = queryRes;
-        for(var i=0; i<deptArr.length; i++) {
-            deptNameArr.push(deptArr[i].department_name);
-        }
-        chooseWhatToDo();
-    });
+connection.connect(err => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId + "\n");
+    
+    connection.query("SELECT * FROM departments",
+        (err, queryRes) => {
+            if (err) throw err;
+            deptArr = queryRes;
+            for (var i = 0; i < deptArr.length; i++) {
+                deptNameArr.push(deptArr[i].department_name);
+            }
+            chooseWhatToDo();
+        });
+});
