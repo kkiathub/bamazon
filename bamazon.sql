@@ -39,13 +39,11 @@ VALUES ("Crock Pot", 1, 25, 100),
     ("Power Bank", 2, 35, 50),
     ("Shower Gel", 3, 6, 200),
     ("Hand Lotion", 3, 9, 180),
-    ("Cargo Pants", 3, 29, 120),
+    ("Cargo Pants", 4, 29, 120),
     ("Sweater", 4, 55, 150),
     ("Tank Top", 4, 19, 300);
     
 SELECT * FROM products;
-
-SELECT * FROM products , departments WHERE products.department_id= departments.id;
 
 
 
