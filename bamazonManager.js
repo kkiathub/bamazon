@@ -137,7 +137,6 @@ function chooseWhatToDo() {
             }
 
         ]).then(function (res) {
-            // if user selects "POST", we add new item to the database.
             switch (res.choice) {
                 case "View Products for Sale":
                     displayProducts();

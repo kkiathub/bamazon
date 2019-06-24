@@ -70,10 +70,13 @@ function purchasePrompt() {
         } else {
             // enough inventory, transaction proceeds.
             var numLeft = productData[prodId].stock_quantity - res.pUnits;
-            connection.query("UPDATE products SET stock_quantity = ? WHERE id=?", [numLeft, res.pId],
+            var totalCost = res.pUnits * productData[prodId].price;
+            var totalSales = productData[prodId].product_sales + totalCost;
+            connection.query("UPDATE products SET stock_quantity = ?, product_sales = ? WHERE id=?", 
+                [numLeft, totalSales, res.pId],
                 (err, queryRes) => {
                     if (err) throw err;
-                    console.log("Order completed: total price : " + res.pUnits * productData[prodId].price);
+                    console.log("Order completed: total price : " + totalCost);
                     continuePrompt();
                 });
             return;
@@ -88,7 +91,6 @@ function displayProducts() {
         (err, itemList) => {
             if (err) throw err;
             productData = itemList;
-            console.log(productData);
             console.table(itemList, ["id" ,"product_name", "price"]);
             purchasePrompt();
         });

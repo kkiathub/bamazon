@@ -15,8 +15,9 @@ CREATE TABLE products (
   id INT NOT NULL AUTO_INCREMENT,
   product_name VARCHAR(45) NOT NULL,
   department_id int NOT NULL,
-  price INT default 0,
-  stock_quantity INT default 0,
+  price INT NOT NULL,
+  stock_quantity INT NOT NULL,
+  product_sales INT DEFAULT 0,
   PRIMARY KEY (id),
   FOREIGN KEY (department_id) REFERENCES departments(id)
 );
@@ -43,6 +44,9 @@ VALUES ("Crock Pot", 1, 25, 100),
     ("Tank Top", 4, 19, 300);
     
 SELECT * FROM products;
+
+SELECT * FROM products , departments WHERE products.department_id= departments.id;
+
 
 
     
