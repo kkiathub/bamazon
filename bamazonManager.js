@@ -79,8 +79,9 @@ function addNewProduct() {
             name: "pName"
         },
         {
-            type: "input",
-            message: "Please enter department name :",
+            type: "list",
+            message: "Please choose the department",
+            choices: deptNameArr,
             name: "pDept"
         },
         {
@@ -96,25 +97,29 @@ function addNewProduct() {
     ]).then(function (res) {
         if (res.pName.trim().length === 0) {
             console.log("Please enter product name!");
-        } else if (res.pDept.trim().length === 0) {
-            console.log("Please enter department name!");
         } else if (isNaN(res.pPrice)) {
             // enter invalid unit number.
             console.log("Invalid price!");
         } else if (isNaN(res.pStock)) {
             console.log("Invalid stock number!");
         } else {
-            console.log( res);
+            var deptId = 0;
+            for(var i=0; i<deptArr.length; i++) {
+                if (deptArr[i].department_name===res.pDept) {
+                    deptId = deptArr[i].id;
+                    break;
+                }
+            }
             var query = connection.query("INSERT INTO products SET ?",
-            {
-                product_name: res.pName,
-                department_name: res.pDept,
-                price: res.pPrice,
-                stock_quantity: res.pStock
-            }, (err, res) => {
-                if (err) throw err;
-                chooseWhatToDo();
-            });
+                {
+                    product_name: res.pName,
+                    department_id: deptId,
+                    price: res.pPrice,
+                    stock_quantity: res.pStock
+                }, (err, res) => {
+                    if (err) throw err;
+                    chooseWhatToDo();
+                });
             return;
         }
         chooseWhatToDo()
@@ -153,5 +158,14 @@ function chooseWhatToDo() {
         });
 }
 
-
-chooseWhatToDo();
+var deptArr = [];
+var deptNameArr = [];
+connection.query("SELECT * FROM departments",
+    (err, queryRes) => {
+        if (err) throw err;
+        deptArr = queryRes;
+        for(var i=0; i<deptArr.length; i++) {
+            deptNameArr.push(deptArr[i].department_name);
+        }
+        chooseWhatToDo();
+    });
