@@ -161,7 +161,6 @@ var deptArr = [];
 var deptNameArr = [];
 connection.connect(err => {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
     
     connection.query("SELECT * FROM departments",
         (err, queryRes) => {

@@ -98,7 +98,6 @@ function displayProducts() {
 
 connection.connect(err => {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
     displayProducts();
 });
 

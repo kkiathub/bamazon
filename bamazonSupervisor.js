@@ -24,7 +24,7 @@ function viewProductSales() {
         + " FROM departments"
         + " LEFT JOIN products"
         + " ON departments.id=products.department_id"
-        + " GROUP BY products.department_id";
+        + " GROUP BY departments.id";
 
     var query = connection.query(sqlStr,
         (err, res) => {
@@ -95,6 +95,5 @@ function chooseWhatToDo() {
 
 connection.connect(err => {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
     chooseWhatToDo();
 });
