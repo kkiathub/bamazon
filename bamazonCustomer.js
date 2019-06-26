@@ -1,5 +1,9 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
+var cTable = require("console.table");
+
+const TEXT_GREEN ="\x1b[32m%s\x1b[0m";
+const TEXT_RED ="\x1b[31m%s\x1b[0m";
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -61,12 +65,12 @@ function purchasePrompt() {
         var prodId = findProductFromTable(res.pId);
         if (prodId < 0) {
             // product not found.
-            console.log("Invalid product ID!");
+            console.log(TEXT_RED, "Invalid product ID!");
         } else if (isNaN(res.pUnits)) {
             // enter invalid unit number.
-            console.log("invalid unit number!");
+            console.log(TEXT_RED, "invalid unit number!");
         } else if (productData[prodId].stock_quantity < res.pUnits) {
-            console.log("Insufficient quantity!");
+            console.log(TEXT_RED, "Insufficient quantity!");
         } else {
             // enough inventory, transaction proceeds.
             var numLeft = productData[prodId].stock_quantity - res.pUnits;
@@ -76,7 +80,7 @@ function purchasePrompt() {
                 [numLeft, totalSales, res.pId],
                 (err, queryRes) => {
                     if (err) throw err;
-                    console.log("Order completed: total price : " + totalCost);
+                    console.log(TEXT_GREEN,"Order completed: total price : " + totalCost);
                     continuePrompt();
                 });
             return;
@@ -91,7 +95,15 @@ function displayProducts() {
         (err, itemList) => {
             if (err) throw err;
             productData = itemList;
-            console.table(itemList, ["id" ,"product_name", "price"]);
+            var displayList = [];
+            for(var i=0; i< itemList.length; i++) {
+                displayList.push( {
+                    id: itemList[i].id,
+                    product_name: itemList[i].product_name,
+                    price: itemList[i].price 
+                } );
+            }
+            console.table(displayList);
             purchasePrompt();
         });
 }

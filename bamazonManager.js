@@ -1,5 +1,8 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
+var cTable = require("console.table");
+const TEXT_GREEN ="\x1b[32m%s\x1b[0m";
+const TEXT_RED ="\x1b[31m%s\x1b[0m";
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -28,7 +31,7 @@ function displayProducts(checklow = false) {
             if (itemList.length > 0)
                 console.table(itemList);
             else
-                console.log("No Low Inventory Products!");
+                console.log(TEXT_GREEN, "No Low Inventory Products!");
             chooseWhatToDo();
         });
 }
@@ -50,17 +53,17 @@ function addToInventory() {
             (err, queryRes) => {
                 if (err) throw err;
                 if (queryRes.length == 0) {
-                    console.log("Invalid product ID " + res.pId)
+                    console.log(TEXT_RED, "Invalid product ID " + res.pId)
                 } else if (isNaN(res.pUnits)) {
                     // enter invalid unit number.
-                    console.log("invalid unit number!");
+                    console.log(TEXT_RED, "invalid unit number!");
                 } else {
                     // enough inventory, transaction proceeds.
                     var numInStock = queryRes[0].stock_quantity + res.pUnits;
                     connection.query("UPDATE products SET stock_quantity = ? WHERE id=?", [numInStock, res.pId],
                         (err, queryRes) => {
                             if (err) throw err;
-                            console.log("Inventory Update completed!");
+                            console.log(TEXT_GREEN, "Inventory Update completed!");
                             chooseWhatToDo();
                         });
                     return;
@@ -96,12 +99,12 @@ function addNewProduct() {
         }
     ]).then(function (res) {
         if (res.pName.trim().length === 0) {
-            console.log("Please enter product name!");
+            console.log(TEXT_RED, "Please enter product name!");
         } else if (isNaN(res.pPrice)) {
             // enter invalid unit number.
-            console.log("Invalid price!");
+            console.log(TEXT_RED, "Invalid price!");
         } else if (isNaN(res.pStock)) {
-            console.log("Invalid stock number!");
+            console.log(TEXT_RED, "Invalid stock number!");
         } else {
             var deptId = 0;
             for (var i = 0; i < deptArr.length; i++) {
@@ -118,6 +121,7 @@ function addNewProduct() {
                     stock_quantity: res.pStock
                 }, (err, res) => {
                     if (err) throw err;
+                    console.log(TEXT_GREEN, "Successfully added new product!");
                     chooseWhatToDo();
                 });
             return;

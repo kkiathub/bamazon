@@ -1,5 +1,8 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
+var cTable = require("console.table");
+const TEXT_GREEN ="\x1b[32m%s\x1b[0m";
+const TEXT_RED ="\x1b[31m%s\x1b[0m";
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -49,10 +52,10 @@ function createNewDepartment() {
 
     ]).then(function (res) {
         if (res.pName.trim().length === 0) {
-            console.log("Please enter department name!");
+            console.log(TEXT_RED, "Please enter department name!");
         } else if (isNaN(res.pCost)) {
             // enter invalid unit number.
-            console.log("Invalid over head costs!");
+            console.log(TEXT_RED, "Invalid over head costs!");
         } else {
             var query = connection.query("INSERT INTO departments SET ?",
                 {
@@ -60,6 +63,7 @@ function createNewDepartment() {
                     over_head_costs: res.pCost,
                 }, (err, res) => {
                     if (err) throw err;
+                    console.log(TEXT_GREEN, "Successfully created new department!");
                     chooseWhatToDo();
                 });
             return;

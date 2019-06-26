@@ -29,7 +29,7 @@ This is a node.js database application.   The idea is to create an Amazon-like s
     3. After the task is done, user will be able to choose what to do again.
     ![Image of supervisor](images/supervisor.jpg)
 
-    [VDO Demonstration](https://www.youtube.com/embed/bpGFsRDWqgE)
+    [VDO Demonstration](https://www.youtube.com/embed/-MbzKhiinLs)
 
 ---
 
